@@ -1,0 +1,693 @@
+syntax = "proto3";         //声明版本，3x版本支持php
+package tcim;           //包名
+option php_namespace = "IUProto\\TcIm";
+option php_metadata_namespace = "IUProto\\TcIm\\Metadata";
+option java_multiple_files = true;
+option java_outer_classname = "IuProto";
+option java_package = "com.wondership.iu.pb";
+
+// 进房 type=1
+message EnterRoom{
+  uint64 uid = 1; // 用户id
+  string nick = 2; // 用户昵称
+  string avatar = 3; // 用户头像
+  uint32 identity = 4; // 用户身份 1:普通用户 2:主播 3:运营 4:超管
+  uint32 wealth_level = 5; // 财富等级
+  uint32 credit_level = 6; // 主播等级
+  uint32 is_true_love = 7; // 是否是真爱
+  uint32 true_love_level = 8; // 真爱等级
+  string true_love_name = 9; // 真爱团名称
+  uint32 noble_level = 10; // 贵族等级
+  uint32 is_new = 11; // 是否是新用户
+  uint32 is_follow = 12; // 是否关注
+  uint32 is_ban = 13; // 是否禁言
+  uint32 is_manager = 14; // 是否是管理员
+  uint32 is_host = 15; // 是否是主持、房主
+  uint32 mic_status = 16; // 房间中的状态 0:观众 1:麦上 2:申请中
+  uint32 r_num = 17; // 真实人数
+  uint32 v_num = 18; // 虚拟人数(做展示)
+  uint32 idx = 19; // 排名
+  uint32 repeat = 20; // 是否重复进房0不是1是
+  uint32 is_stealth = 21; // 是否隐身 0不隐身1隐身
+  repeated int64 badge = 22; // 勋章
+  int64 car = 23; // 座驾
+  uint32 mic_is_mute = 24; // 在麦上是否静音
+  uint32 is_have_red = 25; // 是否有红包
+  uint32 entrance = 26; // 进场特效
+}
+
+enum VoiceRoomMode {
+  UNKNOWN = 0;
+  NORMAL = 1;
+  IN_GAME = 2;
+}
+
+// 离房 type=2
+message LeaveRoom{
+  uint32 r_num = 1; // 真实人数
+  uint32 v_num = 2; // 虚拟人数(做展示)
+  uint64 uid = 3; // 用户id
+}
+
+// 申请连麦 type=3
+message ApplyMic{
+  uint64 uid = 1; // 申请用户id
+  string nickname = 2; // 申请用户昵称
+  uint32 mic_apply_count = 3; // 麦位申请人数
+  string headimage = 4; // 申请人头像
+}
+
+// 取消申请连麦 type=4
+message CancleApplyMic{
+  uint64 uid = 1; // 取消申请的用户
+  uint32 mic_apply_count = 2; // 麦位申请人数
+}
+
+// 去上麦 type=5
+message GoUpMic{
+  uint64 uid = 1; // 要去上麦的用户id
+  uint64 rid = 2; // 要去上麦的房间id
+  uint32 is_invite_mic = 3; // 是否被抱上麦0不是1是
+}
+
+// 上麦成功 type=6
+message SuccessUpMic{
+  uint64 uid = 1; // 用户id
+  uint32 mic_id = 2; // 麦位id
+  string nick = 3; // 用户昵称
+  string avatar = 4; // 用户头像
+  uint32 mic_income = 5; // 麦位热度
+  uint32 mic_mute = 6; // 麦位静音状态 0:没静音 1:静音了
+  int64 avatar_frame = 7; // 头像框id
+  float frame_ratio = 8; // 头像框比例
+  uint32 mic_apply_count = 9; // 麦位申请人数
+  uint32 is_invite_mic = 10; // 是否被抱上麦0不是1是
+}
+
+// 上麦失败 type=7
+message FailUpMic{
+  uint64 uid = 1; // 上麦失败的用户id
+  uint32 mic_apply_count = 2; // 麦位申请人数
+}
+
+// 拒绝接通 type=8
+message RefuseApplyMic{
+  uint64 uid = 1; // 被拒绝申请上麦的用户id
+  uint32 mic_apply_count = 2; // 麦位申请人数
+}
+
+// 麦位上锁、解锁 type=9
+message LockRoomMic{
+  repeated LockRoomMicMap lists = 1;
+}
+
+message LockRoomMicMap{
+  uint32 mic_id = 1; // 麦位id
+  uint32 is_lock = 2; // 麦位是否锁定0没上锁1上锁了
+}
+
+// 麦位静音、解除静音 type=10
+message MuteRoomMic{
+  uint32 mic_id = 1; // 麦位id
+  uint64 uid = 2; // 用户id
+  uint32 is_mute = 3; // 是否静音 0没静音 1静音了
+  uint32 is_by_mute = 4; // 是否被静音或被解除静音 0 不是 1是
+}
+
+// 下麦 type=11
+message HangUpMic{
+  uint32 mic_id = 1; // 麦位id
+  uint64 uid = 2; // 用户id
+  uint32 is_kick_mic = 3; // 是否被踢下麦0不是1是
+}
+
+// 切换麦位 type=12
+message ChangeMicPosition{
+  uint32 from_mic_id = 1; // 更换前麦位
+  uint32 to_mic_id = 2; // 更换后麦位
+  uint64 uid = 3; // 用户id
+}
+
+// 房间密码 type=13
+message RoomPassword{
+  uint32 is_lock = 1; // 是否上锁 0：不上锁 1：上锁
+}
+
+// 更换房间背景 type=14
+message UpdateRoomBg{
+  uint32 back_id = 1; // 房间背景id
+  string back_ext = 2; // 房间背景后缀
+}
+
+// 更换房间聊天区模式 type=15
+message UpdateRoomMod{
+  uint32 mod = 1; // 模式号 0：展示全部消息 1：进房消息隐藏成一条 2：关闭公屏聊天，仅支持主持人和管理员发消息
+}
+
+// 更换房间房间话题 type=16
+message UpdateRoomTopic{
+  string title = 1; // 标题
+  string content = 2; // 内容
+}
+
+// 去下麦 type=17
+message GoHangUpMic{
+  uint64 uid = 1; // 要去下麦的用户id
+  uint64 rid = 2; // 要去下麦的房间id
+}
+
+// 房间内的系统消息 type=18
+message RoomSystemMsg{
+  uint64 rid = 1; // 房间id
+  uint64 uid = 2; // 用户id
+  string content = 3; // 内容
+  string url = 4; // 连接
+  string image = 5; // 图片
+  uint32 type = 6; // 类型 1：普通 2：房间 3：活动 4.用户
+  uint32 open_type = 7; // 类型 1：sdk 2:h5半屏 3:h5全屏
+  uint32 room_type = 8;//房间类型
+}
+
+// 房间聊天 type=19
+message SpeakMsg{
+  SocketUser sender = 1; //发送者
+  SocketUser getter = 2; //接受者
+  string content = 3; // 文本内容
+  EmojInfo emoj = 4; // emoj信息
+}
+
+//房间聊天/送礼/跑道中用到的用户信息。
+message SocketUser {
+  uint64 uid = 1; // 用户id
+  string nick = 2; // 用户昵称
+  string avatar = 3; // 用户头像
+  uint32 identity = 4; // 用户身份 1:普通用户 2:主播 3:运营 4:超管
+  uint32 wealth_level = 5; // 财富等级
+  uint32 credit_level = 6; // 主播等级
+  uint32 is_true_love = 7; // 是否是真爱
+  uint32 true_love_level = 8; // 真爱等级
+  string true_love_name = 9; // 真爱团名称
+  uint32 noble_level = 10; // 贵族等级
+  uint32 is_new = 11; // 是否是新用户
+  uint32 is_manager = 12; // 是否是管理员
+  uint32 is_host = 13; // 是否是主持、房主
+  uint32 is_stealth = 14; // 是否隐身 0不隐身1隐身
+  repeated int64 badge = 15; // 勋章
+  int64 car = 16; // 座驾
+  int32 os = 17; // 平台类型
+  uint32 idx = 18; // 排名
+  uint32 income = 19;
+  int32 mic = 20;
+  uint32 combo = 21;
+  uint64 combo_id = 22;
+  uint32 is_combo = 23;
+}
+
+//房间聊天中的Emoj表情信息
+message EmojInfo{
+  string emoj_id = 1; // 表情id
+  uint32 result = 2; // 随机结果
+  uint32 type = 3; // 表情类型 0 动画无结果，1动画有结果
+}
+
+// 用户资产同步 type=20
+message SyncUserWallet{
+  uint64 uid = 1; // 用户id
+  uint64 money = 2; // 用户U币
+  uint64 tokencoin = 3; // 用户U豆
+  uint64 timestamp = 4; // 时间
+}
+
+// 赠送礼物房间信息
+message GiftRoom {
+  uint64 rid = 1;
+  uint64 hot = 2;
+}
+
+// 赠送礼物信息
+message Gift {
+  uint64 gid = 1;
+  string name = 2;
+  uint32 quantity = 3;
+  uint32 res_type = 4;
+}
+
+// 送礼物 type=21
+message GiftSend{
+  GiftRoom room = 1;
+  SocketUser from_user = 2;
+  repeated SocketUser to_user = 3;
+  Gift gift = 4;
+  uint32 is_all = 5;
+  uint64 time = 6;
+}
+
+// 清空麦位积分 type=22
+message DeleteRoomMicIncome{
+  uint64 rid = 1;// 房间id
+  uint32 is_clear = 2;// 是否清空
+}
+
+// 房间PK模式 type=23
+message RoomPkMod{
+  uint32 type = 1;//类型 1正常切换模式2左右进度条变更3麦位特效变更
+  uint32 mod_status = 2;//模式状态 0关闭 1开启 2加时(团战)/选择心动 3结束
+  string punish = 3;//惩罚
+  uint32 over_time = 4;//剩余时间(s)
+  RoomModMvpAndClownInfo mvp_info = 5;//MVP信息
+  RoomModMvpAndClownInfo clown_info = 6;//小丑信息
+  uint64 left_income = 7;//左边分数
+  uint64 right_income = 8;//右边分数
+  uint64 pk_result = 9;//PK结果 1 left胜利 2 right胜利
+}
+
+//房间PK模式中MVP和小丑信息
+message RoomModMvpAndClownInfo{
+  uint64 uid = 1;//用户uid
+  string nick = 2; // 用户昵称
+  string avatar = 3; // 用户头像
+  uint32 is_stealth = 4; // 是否隐身 0：不隐身 1：隐身
+  uint32 position = 5;//麦位
+  uint32 grade = 6;//帽子第一等级
+  uint32 level = 7;//帽子第二等级
+  uint32 type = 8;//1抢到2升级
+}
+
+// 房间心动模式 type=24
+message RoomHeartMod{
+  uint32 type = 1;//类型 1正常切换模式 2麦位帽子信息有变更 3嘉宾选择心动结果（只有主持人能收到）
+  uint32 mod_status = 2;//模式状态 0关闭 1开启 2选择心动对象 3结束
+  RoomModMvpAndClownInfo left_mvp_info = 5;//左边mvp
+  RoomModMvpAndClownInfo right_mvp_info = 6;//右边mvp
+  RoomHeartModChooseResult choose_result = 7;//选择心动信息
+  repeated RoomHeartModHeartResult heart_result = 8;//牵手结果展示
+  repeated RoomHeartModChooseResult all_choose = 9;//所有的牵手信息
+}
+
+//房间心动模式选择心动对象
+message  RoomHeartModChooseResult{
+  uint32 from_position = 1;//当前麦位
+  uint32 to_position = 2;//选择麦位
+}
+
+//房间心动模式牵手成功
+message RoomHeartModHeartResult{
+  uint64 left_uid = 1;// 左边用户uid
+  string left_nick = 2; // 左边用户昵称
+  string left_avatar = 3; // 左边用户头像
+  uint32 left_is_stealth = 4; // 是否隐身 0：不隐身 1：隐身
+  uint32 left_grade = 5;//帽子第一等级
+  uint32 left_level = 6;//帽子第二等级
+  uint64 right_uid = 7;// 右边用户uid
+  string right_nick = 8; // 右边用户昵称
+  string right_avatar = 9; // 右边用户头像
+  uint32 right_is_stealth = 10; // 是否隐身 0：不隐身 1：隐身
+  uint32 right_grade = 11;//帽子第一等级
+  uint32 right_level = 12;//帽子第二等级
+  uint32 effect = 13;//牵手等级
+  uint32 left_mic_id = 14;//左侧麦位ID
+  uint32 right_mic_id = 15;//右侧麦位ID
+}
+
+//房间飘屏 type = 25
+message FloatingScreen{
+  uint32 type = 1;//类型 1:送礼 2:游戏 3:幸运礼物中奖
+  FloatingRoom room = 2;
+  FloatingGiftSend gift_send = 3;
+  FloatingGame game = 4;
+  FloatingLuckGift luck_gift = 5;
+}
+
+message FloatingLuckGift{
+  SocketUser from_user = 1;
+  GameGift gift = 2;
+  SendLuckGiftGive multiples = 3;
+  SendLuckGiftAward gets = 4;
+  SendLuckGiftAward award = 5;
+  string activity_name = 6;//活动名称
+}
+
+//飘屏房间信息
+message FloatingRoom{
+  uint64 rid = 1;
+  string room_type = 2;
+}
+
+//飘屏送礼
+message FloatingGiftSend{
+  SocketUser from_user = 1;
+  repeated SocketUser to_user = 2;
+  FloatingGiftSendGift gift = 3;
+  uint32 is_all = 4;
+}
+
+//飘屏送礼用户信息
+message FloatingGiftSendGift{
+  uint64 gid = 1;
+  string name = 2;
+  uint64 total_price = 3;
+  uint32 quantity = 4;
+}
+
+//飘屏玩游戏
+message FloatingGame{
+  SocketUser from_user = 1;
+  GameGift gift = 2;
+  GameInfo game = 3;
+}
+
+//房间麦位模式设置 type = 26
+message AllowMic{
+  string nick = 1; // 用户昵称
+  uint32 allow_mic = 2;//类型 0:申请上麦 1:自由上麦
+}
+
+//玩游戏中奖 type = 27
+message PlayGame{
+  SocketUser from_user = 1;
+  repeated GameGift gift = 2;
+  GameInfo game = 3;
+  GameGift award = 4;
+  string activity_name = 5;//活动名称
+}
+
+//游戏礼物信息
+message GameGift{
+  uint64 gid = 1;
+  string name = 2;
+  uint32 quantity = 3;
+}
+
+//游戏信息
+message GameInfo{
+  string name = 1;
+}
+
+//房间关闭 type = 28
+message RoomEndLiving{
+  uint64 rid = 1;
+}
+
+//用户升级 type = 29
+message UserUpgrade{
+  uint64 uid = 1; // 用户id
+  uint32 type = 2; // 1：财富等级2：魅力等级
+  uint32 wealth_level = 3; // 财富等级
+  uint32 credit_level = 4; // 主播等级
+  uint64 time = 5;// 时间
+  string avatar = 6;// 头像
+  string nickname = 7;// 昵称
+}
+
+//房间管理 type = 30
+message RoomManage{
+  uint64 uid = 1; // 用户id
+  uint32 action = 2; // 1设置管理员2取消管理员3禁言4取消禁言5踢人
+}
+
+//蓄力套圈圈福利时刻 type = 31
+message RoomHwdCirclePoised{
+  uint64 lucktime = 1; // 福利剩余时间
+  uint32 isluck = 2; // 是否福利时刻
+  uint32 type = 3; // 1新手2大师
+  uint32 score = 4; // 蓄力值
+  string gift_name = 5; // 福利礼物名称
+  uint32 gift_id = 6; // 福利礼物id
+  uint32 ratio = 7; // 福利倍数
+  uint64 endtime = 8; // 福利结束时间
+}
+//房间有红包发送 type = 32
+message RoomSendRedPack{
+  uint64 red_pack_type = 1; // 红包类型：100081真爱红包 100082福利红包
+}
+
+//赠送幸运礼物 type = 33
+message SendLuckGiftSystem{
+  SocketUser from_user = 1;
+  GameGift gift = 2;
+  repeated SendLuckGiftGive multiples = 3;
+  SendLuckGiftAward gets = 4;
+  SendLuckGiftAward award = 5;
+  string activity_name = 6;//活动名称
+}
+
+//房间强制关闭 type = 34
+message RoomForceEndLiving{
+  uint64 rid = 1;
+}
+
+//房间头条 type = 35
+message HeadLineFloatingScreen{
+  FloatingRoom room = 1;
+  FloatingGiftSend gift_send = 2;
+}
+
+
+//2022情人节的横幅 type = 36
+message Room2022ValentineDayStreamer{
+  Room2022ValentineDayUser from_user = 1;
+  Room2022ValentineDayUser to_user = 2;
+  Room2022ValentineDayGift gift = 3;
+  string content = 4;
+}
+
+// 切换语音房模式 type = 37
+message ChangeVoiceRoomMode {
+  int32 rid = 1; // 房间 id
+  VoiceRoomMode voice_mode = 2; // 房间的模式
+  int32 game_id = 3; // 如果切换到游戏房间模式的话, 游戏的 id
+  int64 third_game_id = 4; // 如果切换到游戏房间模式的话, 三方游戏 id
+}
+
+// 切换游戏中的房间中的游戏 type = 38
+message ChangeRoomGame {
+  int32 rid = 1; // 房间id
+  int32 game_id = 2; // 游戏 id
+  int64 third_game_id = 3; // 三方游戏 id
+}
+
+
+//2022情人节的横幅用户信息
+message Room2022ValentineDayUser{
+  uint64 uid = 1;
+  string nickname = 2;
+  string headimage = 3;
+  int64 avatar_frame = 4; // 头像框id
+  float frame_ratio = 5; // 头像框比例
+}
+
+//2022情人节的横幅礼物信息
+message Room2022ValentineDayGift{
+  uint64 gid = 1;
+  string name = 2;
+  uint32 quantity = 3;
+}
+
+//赠送幸运礼物中奖
+message SendLuckGiftAward{
+  uint64 money = 1;
+}
+
+//中奖倍数列表
+message SendLuckGiftGive{
+  uint32 multiple = 1;
+  uint32 count = 2;
+}
+
+//客户端p2p消息, 房间音乐播放通知 type = -101
+message MusicPlayNotify{
+  uint64 uid = 1; //当前操作人的uid
+  string song_name = 2; //歌曲名称
+}
+
+/***************
+ * 用户私聊的消息*
+ ***************/
+
+//用户私聊对话文字提醒 type = 100000
+message UserTextInformation{
+  string title = 1; //标题
+  string content = 2; //内容
+}
+
+//用户私聊装扮相关消息 type = 100001
+message UserDress{
+  uint32 action = 1; //操作 1赠送 2购买 3到期 4快到期 5获得 6到期不可续费
+  int64 dress_id = 2; // 装扮id
+  uint32 dress_type = 3; // 装扮类型 1头像框2勋章3座驾
+  float ratio = 4; // 装扮比例
+  string name = 5; // 装扮名称
+  string explain = 6; //简单的描述
+  uint32 price = 7; //价格
+  uint32 day = 8; //天数
+  uint32 open_type = 9; //打开方式
+  string text_unlink = 10;//不可以跳转的文字内容
+  string text_link = 11;//可以跳转的文字内容
+  uint32 jump_type = 12;//跳转方式
+  string backimage = 13; //消息背景图
+}
+
+//用户私聊真爱相关消息 type = 100002
+message UserTrueLove{
+  uint32 action = 1; //操作 1开通 2到期 3快到期
+  uint32 open_type = 2; //打开方式
+  string text_unlink = 3;//不可以跳转的文字内容
+  string text_link = 4;//可以跳转的文字内容
+  string backimage = 5; //消息背景图
+}
+
+//用户私聊通知模板 type = 100003
+message UserPrivateMode{
+  uint64 rid = 1; // 房间id
+  uint32 room_type = 2;//房间类型
+  uint64 uid = 3; // 用户id
+  string content = 4; // 内容
+  string url = 5; // 连接
+  string feed_id = 6; // 动态id
+  uint32 feed_type = 7; // 动态类型
+  repeated string image = 8; // 图片
+  uint32 type = 9; // 类型 1：普通 2：房间 3：活动 4.用户 5.动态
+  uint32 open_type = 10; // 类型 1：sdk 2:h5半屏 3:h5全屏
+  string under_text = 11; // 底部文字
+}
+
+//用户搭讪 type = 100004
+message UserAccostText{
+  string content = 1; //内容
+}
+
+//用户私聊风险 type = 100005
+message UserPrivateRisk{
+  string type = 1; //1资金诈骗风险2联系方式引流风险
+}
+
+/***************
+ * 互动的消息 *
+ ***************/
+//用户互动消息通知 type = 200000
+message UserInteractNotice{
+  uint64 uid = 1; // 用户id
+}
+
+//用户访问消息通知 type = 200001
+message UserVisitNotice{
+  uint64 uid = 1; // 用户id
+  uint32 type = 2;// 1:老人访问2.新增访问
+}
+
+//用户关注的人发动态消息通知 type = 200002
+message UserFollowFeedNotice{
+  uint64 uid = 1; // 用户id
+}
+
+//飞机票 type = 200003
+message UserAirTicket{
+  uint64 rid = 1; // 房间id
+  uint32 room_type = 2;//房间类型
+  uint64 uid = 3; // 用户id
+  string content = 4; // 内容
+  string url = 5; // 连接
+  string image = 6; // 图片
+  uint32 type = 7; // 类型 1：普通 2：房间 3：活动 4.用户
+  uint32 open_type = 8; // 类型 1：sdk 2:h5半屏 3:h5全屏
+  uint32 button_type = 9; // 按钮类型 根据type区分 type=1 (0:无按钮 1:确认) type=2 (0:无按钮 1:拒绝/围观 2:拒绝/参与) type=3 (0:无按钮 1:取消/立即了解) type=4 (0:无按钮 1:挂断/接通)
+}
+
+//用户获赠弹窗 type = 200004
+message UserMessageTop{
+  uint64 type = 1;//1:默认2:中秋
+  string title = 2;
+  string content = 3;
+  repeated UserMessageTopProp prop = 4;
+}
+message UserMessageTopProp{
+  string name = 1;
+  uint64 count = 2;
+  uint64 type = 3;//1头像框2勋章3礼物4座驾5其他
+  string resource = 4;//1-2-3-4:资源id根据不同的资源类型获取不同的资源不用关注资源类型 5：资源路径
+  uint64 resource_type = 5;//resource为5时资源类型 1图片2动态图片3svga4视频5语音 (123使用file1 4使用file2 5使用file3)
+}
+
+//用户表白弹窗 type = 200005
+message User2022ValentineDayMessageTop{
+  uint64 id = 1;//表白弹窗的id
+}
+
+//用户邀请进房 type = -501
+message InviteJoinRoom{
+  string avatar = 1; // 当前主持用户头像
+  string cover = 2; // 当前房间封面
+  uint64 rid = 3; // 房间id
+  uint32 room_type = 4; //房间类型，同服务器API定义一致。
+  string topic_title = 5; // 当前房间话题标题
+}
+
+//收到PK邀请 type = 30001
+message PKInvitation{
+  string avatar = 1; // 主播头像
+  string nick = 2; // 主播昵称
+  uint64 from_rid = 3; // 房间id
+  string room_title = 4; // 房间名称
+  uint64 room_hot = 5; // 房间热度
+  string topic = 6; //PK主题
+  string punish = 7; // 惩罚
+  uint64 pkid = 8; // PKid
+}
+
+//PK邀请反馈 type = 30002
+message PKInvitationFeedback{
+  uint64 pkid = 1; // PKid
+  uint32 type = 2; // 邀请回应 1:同意 2:拒绝 4:取消
+  uint64 dst_rid = 3; // 对方的rid
+}
+
+//随机PK匹配成功 type = 30004
+message RandomPKMatched{
+  uint64 uid = 1; // 用户ID
+  string nick = 2; // 用户昵称
+  uint32 gender = 3; // 性别 1男 2女
+  uint32 credit_level = 4; // 主播等级
+  string avatar = 5; // 头像
+  uint64 from_rid = 6; // 房间ID
+  uint64 pkid = 7; // pkID
+}
+
+//PK状态流转 type = 30003
+message PKStateChange{
+  uint64 pkid = 1; // PKid
+  uint32 state = 2; // 状态 1:开始 2:惩罚 3: 结束
+  uint64 host_uid = 3; //本方UID
+  uint64 guest_uid = 4; //对方UID
+  uint64 host_rid = 5; //本方rid
+  uint64 guest_rid = 6; //对方rid
+  uint32 pk_state = 7; //1失败 2平局 3胜利
+  uint64 end_time = 8; //当前状态结束时间戳
+  string topic = 9; //topic
+  string punish = 10; //惩罚
+  string guest_nick = 11; //客场主播的昵称
+  string icon_reset = 12; //pk活动图标
+  uint64 time = 13; //服务器时间
+}
+
+//pk分数更新 type = 30005
+message PKScoreRefresh{
+  uint64 pkid = 1; // PKid
+  uint64 rid = 2; // 房间ID
+  uint64 host_score = 3; // 主场分数
+  uint64 guest_score = 4; // 客场分数
+}
+
+//房间开播 type = 2022
+message RoomOpenLive{
+  uint64 rid = 1;
+}
+
+//礼物猜猜 开始 type = 33000
+message GuessScheduleStatusChange{
+  uint32 sid = 1; // 轮次ID
+  uint32 status = 2; // 状态 0:开始 1:准备开奖 2:开奖结果 3:结束
+  uint32 tik_time = 3; // 倒计时间
+  uint32 server_time = 4; // 服务器时间
+  uint32 lucky_ticket = 5; // 中奖号码
+  string big = 6; // 大奖信息
+}

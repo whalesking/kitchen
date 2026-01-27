@@ -1,0 +1,75 @@
+{
+  "name": "iu-game",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "test": "cross-env NODE_ENV=test vue-cli-service build",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "proto": "browserify IMBody_pb.js -o src/utils/build.js"
+  },
+  "dependencies": {
+    "@lucky-canvas/vue": "^0.1.8",
+    "amfe-flexible": "^2.2.1",
+    "axios": "^0.21.1",
+    "core-js": "^3.6.5",
+    "exif-js": "^2.3.0",
+    "google-protobuf": "^3.19.1",
+    "jquery": "^3.5.1",
+    "js-md5": "^0.7.3",
+    "postcss-px2rem-exclude": "0.0.6",
+    "qiniu-js": "^3.3.3",
+    "store": "^2.0.12",
+    "svgaplayerweb": "^2.3.1",
+    "tim-js-sdk": "^2.16.0",
+    "tim-upload-plugin": "^1.0.3",
+    "v-distpicker": "^1.2.9",
+    "vant": "^2.12.9",
+    "vconsole": "^3.4.0",
+    "vue": "^2.6.11",
+    "vue-cookies": "^1.7.4",
+    "vue-router": "^3.4.9",
+    "vuex": "^3.6.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-import": "^1.13.3",
+    "cross-env": "^7.0.3",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "qs": "^6.9.6",
+    "requires-port": "^1.0.0",
+    "sass": "^1.32.0",
+    "sass-loader": "^10.0.0",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "jquery": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "no-unreachable": 1,
+      "no-irregular-whitespace": "off"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
