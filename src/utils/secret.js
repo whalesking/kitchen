@@ -1,6 +1,6 @@
 import md5 from "js-md5";
 export default function getSecretKey(userInfo,t){
-    let signStr = "iusnstuiqokbvtta1$X";
+    let signStr = "iusnstuiqokbta1$X";
     let os = userInfo['header']['X-os'];
     let imei = userInfo['header']['X-imei'] || "";
     let token = userInfo['header']['X-token'];
