@@ -14,30 +14,36 @@
             <button class="btn-help"></button>
         </div>
         <!-- 近期记录 -->
-         <div class="history-line-box">
-            <template v-for="item,index in historyList" >
-                <div :class="`history-item t-${index+1}`" :key="index">
+        <div class="history-line-box">
+            <div class="history-line">
+                <template v-for="item, index in historyList">
+                    <div :class="`history-item t-${index + 1}`" :key="index">
 
-                </div>
-            </template>
-         </div>
+                    </div>
+                </template>
+            </div>
+
+
+        </div>
         <!--转盘区域-->
         <div class="rolling-box">
             <div class="gift-list-box">
                 <ul>
-                    <li v-for="item,index in giftArr"
-                        :class="{turn:current==index,active:isRollStop==(index+1)&&isRollStop==(current+1)}"
+                    <li v-for="item, index in giftArr"
+                        :class="{ turn: current == index, active: isRollStop == (index + 1) && isRollStop == (current + 1) }"
                         :key="index">
-                        <img :src="`https://file8.iusns.com/gift/${item.id}_b`" alt="">
-                        <span><i>{{ item.tip }}</i></span>
+                        <div :class="`icon icon-${index + 1}`"></div>
                     </li>
                 </ul>
-                <div class="running-box" v-if="showTime">
-                    <span>本轮进行中</span>
-                    <p><span>{{ runTime }}</span>s</p>
-                </div>
-                <div class="over-box" v-if="isOver">
-                    本轮已结束
+                <div class="running-box">
+                    <template v-if="showTime">
+                        <span>本轮进行中</span>
+                        <p><span>{{ runTime }}</span>s</p>
+                    </template>
+                    <template v-if="isOver">
+                        本轮已结束
+                    </template>
+
                 </div>
             </div>
         </div>
@@ -45,12 +51,11 @@
         <div class="bottom-box">
             <div class="chose-box">
                 <ul>
-                    <li v-for="item,index in giftArr" @click="choseThis(index)"
-                        :class="`${betedInfo[index+1]>0?'win':''} ${choseGift===index?'active':''} `"
+                    <li v-for="item, index in giftArr" @click="choseThis(index)"
+                        :class="`${betedInfo[index + 1] > 0 ? 'win' : ''} ${choseGift === index ? 'active' : ''} `"
                         :key="index">
-                        <img :src="`https://file8.iusns.com/gift/${item.id}_b`" alt="">
-                        <span>{{ item.tip }}</span>
-                        <span class="get">{{ betedInfo[index + 1] || 0 }}</span>
+                        <div :class="`icon icon-${index + 1}`"></div>
+                        <div class="get-num">{{ betedInfo[index + 1] || 0 }}</div>
                     </li>
                 </ul>
             </div>
@@ -60,23 +65,23 @@
                 </div>
                 <div class="add-box">
                     <span class="add-btn" @click="betThis(1)">+1 <span class="price">
-                        <template v-if="conch>=1000"><i class="icon"></i>X200</template>
-                        <template v-else>200金币</template>
-                    </span>
+                            <template v-if="conch >= 1000"><i class="icon"></i>X200</template>
+                            <template v-else>200金币</template>
+                        </span>
                     </span>
                     <span class="add-btn" @click="betThis(10)">+10 <span class="price">
-                        <template v-if="conch>=2000"><i class="icon"></i>X2000</template>
-                        <template v-else>2000金币</template>
-                    </span>
+                            <template v-if="conch >= 2000"><i class="icon"></i>X2000</template>
+                            <template v-else>2000金币</template>
+                        </span>
                     </span>
                     <span class="add-btn" @click="betThis(99)">+99 <span class="price">
-                        <template v-if="conch>=19800"><i class="icon"></i>X19800</template>
-                        <template v-else>19800金币</template>
-                    </span>
+                            <template v-if="conch >= 19800"><i class="icon"></i>X19800</template>
+                            <template v-else>19800金币</template>
+                        </span>
                     </span>
                 </div>
-                <button class="last-again active" key="1" v-if="(currentSid-betSid)==1&&!isOver"
-                        @click="tryLastAgain">重复上轮
+                <button class="last-again active" key="1" v-if="(currentSid - betSid) == 1 && !isOver"
+                    @click="tryLastAgain">重复上轮
                 </button>
                 <button class="last-again" key="2" v-else>重复上轮</button>
                 <button class="nav" @click="showNav = true">
@@ -84,10 +89,8 @@
                     <span></span>
                     <span></span>
                 </button>
-                <div class="phone-list" v-for="item,index in moveArr" :key="item+index+'s'"
-                     :style="beginLeft ? `left:${beginLeft-20}px` : ''"
-                     :class="`show-end-${item}`"
-                >
+                <div class="phone-list" v-for="item, index in moveArr" :key="item + index + 's'"
+                    :style="beginLeft ? `left:${beginLeft - 20}px` : ''" :class="`show-end-${item}`">
                 </div>
             </div>
         </div>
@@ -110,7 +113,7 @@
             <div class="confirm-box">
                 <div class="top-box">
                     <p>本次支付需消耗{{ betNum * 200 }}{{ conch > (betNum * 200) ? `贝壳` : `金币` }}，是否确定</p>
-                    <span @click="noTip = !noTip"><i :class="`icon ${noTip?'checked':''}`"></i>今日不再提醒</span>
+                    <span @click="noTip = !noTip"><i :class="`icon ${noTip ? 'checked' : ''}`"></i>今日不再提醒</span>
                 </div>
                 <div class="button-box">
                     <button @click="showConfirm = false">取消</button>
@@ -123,26 +126,26 @@
         <div class="mask-box result" v-if="showRs">
             <div class="result-box">
                 <div class="img-box">
-                    <img :src="`https://file8.iusns.com/gift/${giftArr[winGift-1].id}_b`" alt="">
+                    <img :src="`https://file8.iusns.com/gift/${giftArr[winGift - 1].id}_b`" alt="">
                 </div>
                 <p>恭喜您，本轮共获得{{ rsTxt }}贝壳</p>
-                <button @click="showRs=false">确定</button>
+                <button @click="showRs = false">确定</button>
             </div>
         </div>
         <!--子页面-->
-        <div class="left-enter-box" :class="`${showHistory||showRule||showShop?'show':''}`"
-             v-if="showHistory||showRule||showShop">
+        <div class="left-enter-box" :class="`${showHistory || showRule || showShop ? 'show' : ''}`"
+            v-if="showHistory || showRule || showShop">
             <History :giftArr="giftArr" v-if="showHistory" @back="showHistory = false"></History>
             <Rule v-if="showRule" @back="showRule = false"></Rule>
-            <Shop @refreshBalance="e=>{
-               conch = e
+            <Shop @refreshBalance="e => {
+                conch = e
             }" :conch="conch" v-if="showShop" @back="showShop = false"></Shop>
         </div>
 
     </div>
 </template>
 <script>
-import {Icon, Toast} from "vant";
+import { Icon, Toast } from "vant";
 import Rule from "./rule";
 import History from "./history";
 import Shop from "./shop";
@@ -191,7 +194,7 @@ export default {
             noTip: false,
             winGift: '',
             betNum: '',
-            historyList: [1,2,3,4,5,6],//近期记录
+            historyList: [1, 2, 3, 4, 5, 6],//近期记录
             moveArr: [],//动画用
             enterTime: '',//进房系统时间
             currentStatus: '',
@@ -200,12 +203,12 @@ export default {
             betSid: '',//下注轮次
             speed: 300,
             giftArr: [
-                {id: 100032, tip: '×2倍', mul: '2',},
-                {id: 100030, tip: '×4倍', mul: '4',},
-                {id: 100026, tip: '×8倍', mul: '8',},
-                {id: 100019, tip: '×16倍', mul: '16',},
-                {id: 100024, tip: '×20倍', mul: '20',},
-                {id: 100009, tip: '×30倍', mul: '30',},
+                { id: 100032, tip: '×2倍', mul: '2', },
+                { id: 100030, tip: '×4倍', mul: '4', },
+                { id: 100026, tip: '×8倍', mul: '8', },
+                { id: 100019, tip: '×16倍', mul: '16', },
+                { id: 100024, tip: '×20倍', mul: '20', },
+                { id: 100009, tip: '×30倍', mul: '30', },
             ],
             isFromPc: false,
             token: "",
@@ -229,7 +232,7 @@ export default {
         this.tim = TIM.create(options);
         this.TIM = TIM
         this.tim.setLogLevel(3);
-        this.tim.registerPlugin({'tim-upload-plugin': TIMUploadPlugin});
+        this.tim.registerPlugin({ 'tim-upload-plugin': TIMUploadPlugin });
         this.checkShowTip();
         // this.isLoading = true
         if (this.isFromPc) {
@@ -244,19 +247,19 @@ export default {
             window.winOcx.resetTransparentBg && window.winOcx.resetTransparentBg();
             setTimeout(() => {
                 window.winOcx.getUserInfo &&
-                window.winOcx.getUserInfo((data) => {
-                    this.initData = data;
-                    this.rid = this.initData.rid ? this.initData.rid : 1;
-                    this.uid = this.initData.uid ? this.initData.uid : '';
-                    if (this.initData.uid == "10005023") {
-                        new Vconsole();
-                    }
-                    sessionStorage.setItem("userInfo", JSON.stringify(data));
-                    document.onselectstart = function (e) {
-                        return false;
-                    };
-                    this.getBaseInfo();
-                });
+                    window.winOcx.getUserInfo((data) => {
+                        this.initData = data;
+                        this.rid = this.initData.rid ? this.initData.rid : 1;
+                        this.uid = this.initData.uid ? this.initData.uid : '';
+                        if (this.initData.uid == "10005023") {
+                            new Vconsole();
+                        }
+                        sessionStorage.setItem("userInfo", JSON.stringify(data));
+                        document.onselectstart = function (e) {
+                            return false;
+                        };
+                        this.getBaseInfo();
+                    });
             }, time);
         }
     },
@@ -482,7 +485,7 @@ export default {
                 console.log(event.data.state, 'NET_STATE_CHANGE')
             }, this);
             //加入群聊
-            this.tim.joinGroup({groupID: `${this.imRid}`, type: this.TIM.TYPES.GRP_AVCHATROOM}).then(res => {
+            this.tim.joinGroup({ groupID: `${this.imRid}`, type: this.TIM.TYPES.GRP_AVCHATROOM }).then(res => {
                 console.log(`已加入${this.imRid}群聊`)
                 this.isIMReady = true;
             }).catch(err => {
@@ -637,7 +640,8 @@ export default {
         right: 18px;
         z-index: 1;
 
-        .coin-box, .phone-box {
+        .coin-box,
+        .phone-box {
             float: right;
             height: 44px;
             background: url("~@/assets/guess/jifen_icon@3x.png") no-repeat 4px center #6E5548;
@@ -675,7 +679,7 @@ export default {
     }
 
     .title {
-      position: absolute;
+        position: absolute;
         top: 0px;
         left: 50%;
         transform: translateX(-50%);
@@ -688,29 +692,58 @@ export default {
 
 }
 
+.history-line-box {
+    width: 708px;
+    height: 72px;
+    background: url("~@/assets/kitchen/history-scroll-bg.png") no-repeat center;
+    background-size: contain;
+    position: absolute;
+    top: 320px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    box-sizing: border-box;
+    padding: 0 10px;
+
+    .history-line {
+        width: 630px;
+        height: 72px;
+        display: flex;
+        margin-left: 78px;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-y: hidden;
+        overflow-x: auto;
+
+        .history-item {
+            width: 52px;
+            height: 52px;
+            margin-right: 4px;
+            background: url("~@/assets/kitchen/icon-mini-1.png") no-repeat center;
+            background-size: contain;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+
+            @for $i from 1 through 6 {
+                &:nth-child(#{$i}) {
+                    background-image: url("~@/assets/kitchen/icon-mini-#{$i}.png");
+                }
+            }
+        }
+    }
+
+}
+
 .rolling-box {
     width: 750px;
     height: 750px;
-    background: url("~@/assets/guess/bg_1@3x.png") no-repeat center;
-    background-size: cover;
     position: absolute;
-    top: 150px;
+    top: 350px;
     overflow: hidden;
     z-index: 2;
-
-    &:before {
-        content: '';
-        position: absolute;
-        display: block;
-        top: 50%;
-        left: 50%;
-        width: 750px;
-        height: 750px;
-        transform: translate(-50%, -50%);
-        background: url("~@/assets/guess/bg_2@3x.png") no-repeat center;
-        background-size: cover;
-        animation: running 60s infinite linear;
-    }
 
     .gift-list-box {
         width: 0px;
@@ -726,7 +759,6 @@ export default {
             top: 50%;
             width: 0px;
             height: 0px;
-            background: #000;
             transform: translate(-50%, -50%);
         }
 
@@ -734,107 +766,53 @@ export default {
             position: absolute;
             left: 50%;
             top: 50%;
-            width: 176px;
-            height: 126px;
-            transform: translate(-50%, -50%) rotateZ(0) translateY(-250px);
+            width: 156px;
+            height: 168px;
+            transform: translate(-50%, -50%) rotateZ(0) translateY(-200px);
+            background: url("~@/assets/kitchen/icon-lotto-1.png") no-repeat center;
+            background-size: cover;
 
-            img {
-                width: 120px;
-                height: 120px;
-                position: absolute;
-                left: 50%;
-                top: 0px;
-                transform: translateX(-50%);
-            }
-
-            span {
-                font-size: 25px;
-                color: #fff;
-                position: absolute;
-                bottom: -10px;
-                left: 50%;
-                width: 100px;
-                height: 40px;
-                text-align: center;
-                background: rgba(33, 14, 1, 0.8);
-                border-radius: 20px;
-                line-height: 40px;
-                transform: translateX(-50%);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                vertical-align: middle;
+            @for $i from 1 through 6 {
+                &:nth-child(#{$i}) {
+                    background-image: url("~@/assets/kitchen/icon-lotto-#{$i}.png");
+                }
             }
 
             &:nth-child(1) {
-                img {
-                    width: 115px;
-                    height: 115px;
-                    top: -15px;
-                    //margin-left: 15px;
-                }
-
-                transform: translate(-50%, -50%) rotateZ(60deg) translateY(-250px) rotateZ(-60deg);
+                transform: translate(-50%, -50%) rotateZ(-150deg) translateY(-200px) rotateZ(150deg);
             }
 
             &:nth-child(2) {
-                img {
-                    width: 115px;
-                    height: 115px;
-                    margin-top: 5px;
-                }
-
-                transform: translate(-50%, -50%) rotateZ(120deg) translateY(-250px) rotateZ(-120deg);
+                transform: translate(-50%, -50%) rotateZ(-210deg) translateY(-200px) rotateZ(210deg);
             }
 
             &:nth-child(3) {
-                img {
-
-                }
-
-                transform: translate(-50%, -50%) rotateZ(180deg) translateY(-250px) rotateZ(-180deg);
+                transform: translate(-50%, -50%) rotateZ(-270deg) translateY(-250px) rotateZ(270deg);
             }
 
             &:nth-child(4) {
-                img {
-
-                }
-
-                transform: translate(-50%, -50%) rotateZ(240deg) translateY(-250px) rotateZ(-240deg);
+                transform: translate(-50%, -50%) rotateZ(-330deg) translateY(-200px) rotateZ(330deg);
             }
 
             &:nth-child(5) {
-                img {
-                }
-
-                transform: translate(-50%, -50%) rotateZ(300deg) translateY(-250px) rotateZ(-300deg);
+                transform: translate(-50%, -50%) rotateZ(-390deg) translateY(-200px) rotateZ(30deg);
             }
 
             &:nth-child(6) {
-                img {
+                transform: translate(-50%, -50%) rotateZ(-450deg) translateY(-250px) rotateZ(90deg);
+            }
+
+
+
+            &.turn:after,
+            &.active:after {
+                background-image: url("~@/assets/kitchen/icon-lotto-1-c.png");
+
+                @for $i from 1 through 6 {
+                    &:nth-child(#{$i}) {
+                        background-image: url("~@/assets/kitchen/icon-lotto-#{$i}-c.png");
+                    }
                 }
-
-                transform: translate(-50%, -50%) rotateZ(360deg) translateY(-250px) rotateZ(0deg);
-            }
-
-            &:after {
-                content: '';
-                display: none;
-                //display: block;
-                width: 340px;
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                z-index: -1;
-                margin-top: -10px;
-                transform: translate(-50%, -50%);
-                height: 340px;
-                background: url("~@/assets/guess/liwu_xuanzhong_bg@3x.png") no-repeat center;
-                background-size: cover;
-            }
-
-            &.turn:after, &.active:after {
-                display: block;
             }
 
             &.active:after {
@@ -848,9 +826,12 @@ export default {
             position: absolute;
             left: 50%;
             top: 50%;
-            width: 150px;
+            width: 176px;
+            height: 168px;
             transform: translate(-50%, -50%);
             margin-top: -20px;
+            background: url("~@/assets/kitchen/center-bg.png") no-repeat center;
+            background-size: cover;
 
             span {
                 font-size: 28px;
@@ -893,13 +874,21 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 172px;
     z-index: 1;
     background: #462D21;
 
+    width: 750px;
+    height: 364px;
+
+    background: rgba(255, 255, 255, 0.13);
+    box-shadow: inset 0px 2 126px 0px rgba(205, 134, 26, 0.66), inset 0px 2 46px 0px rgba(255, 255, 255, 0.5);
+    border-radius: 34px 34px 0px 0px;
+    box-sizing: border-box;
+    border: 2px solid #FFF1BE;
+
     .chose-box {
         position: absolute;
-        top: -145px;
+        top: 65px;
         width: 100%;
 
         ul {
@@ -908,104 +897,57 @@ export default {
             justify-content: space-around;
 
             li {
-                width: 120px;
-                height: 140px;
+                width: 110px;
+                height: 160px;
                 position: relative;
                 z-index: 1;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                flex-direction: column;
 
-                &:before {
-                    content: '';
+                .icon {
                     display: block;
-                    position: absolute;
-                    left: 50%;
-                    bottom: 0;
-                    transform: translateX(-50%);
-                    width: 196px;
-                    height: 258px;
-                    background: url("~@/assets/guess/beilv_weixuanzhong_bg@3x.png") no-repeat center bottom;
-                    background-size: 196px 258px;
+                    width: 110px;
+                    height: 128px;
+                    background: url("~@/assets/kitchen/game-tab-1.png") no-repeat center top;
+                    background-size: 156px auto;
                     z-index: -10;
                 }
 
-                &.active:after {
-                    content: '';
-                    display: block;
-                    position: absolute;
-                    left: 50%;
-                    bottom: 0;
-                    transform: translateX(-50%);
-                    width: 196px;
-                    height: 258px;
-                    background: url("~@/assets/guess/beilv_xuanze_bg@3x.png") no-repeat center bottom;
-                    background-size: 196px 258px;
-                    z-index: -9;
-                }
 
                 &.win:before {
                     background-image: url(~@/assets/guess/beilv_xuanzhong_bg@3x.png);
                 }
 
-                img {
-                    height: 64px;
-                    width: 64px;
-                    position: absolute;
-                    left: 50%;
-                    top: -15px;
-                    transform: translateX(-50%);
-                }
+                .get-num {
+                    width: 100px;
+                    height: 29px;
+                    font-weight: 400;
+                    font-size: 20px;
+                    color: #FFFFFF;
+                     background: url("~@/assets/kitchen/bet-num-bg.png") no-repeat center bottom;
+                    background-size: 100px 29px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }   
 
-
-                span {
-                    position: absolute;
-                    left: 50%;
-                    font-size: 22px;
-                    line-height: 20px;
-                    top: 60px;
-                    width: 100%;
-                    text-align: center;
-                    color: #fff;
-                    transform: translateX(-50%);
-
-
-                    &.get {
-                        top: 100px;
+                @for $i from 1 through 6 {
+                    &:nth-child(#{$i}) .icon-#{$i} {
+                        background-image: url("~@/assets/kitchen/game-tab-#{$i}.png");
                     }
                 }
 
-                &:nth-child(1) {
-                    img {
-                        top: -20px;
+
+                &.active {
+                    @for $i from 1 through 6 {
+                        &:nth-child(#{$i}) .icon-#{$i} {
+                            background-image: url("~@/assets/kitchen/game-tab-#{$i}-c.png");
+                        }
                     }
                 }
 
-                &:nth-child(2) {
-                    img {
-                        width: 58px;
-                        height: 58px;
-                        //transform: translateX(-50%) scale(0.8);
-                        top: -5px;
-                    }
-                }
-
-                &:nth-child(3) {
-                    img {
-                        top: -8px;
-                    }
-                }
-
-                &:nth-child(4) {
-                    img {
-                        top: -13px;
-                    }
-                }
-
-                &:nth-child(5) {
-                    img {
-                        width: 62px;
-                        height: 62px;
-                        top: -11px;
-                    }
-                }
             }
         }
 
@@ -1014,7 +956,7 @@ export default {
     .button-box {
         position: absolute;
         left: 0;
-        top: 0;
+        bottom: 0;
         height: 172px;
         right: 0;
 
@@ -1359,6 +1301,7 @@ export default {
     0% {
         left: 100%;
     }
+
     100% {
         left: 0;
     }
@@ -1368,6 +1311,7 @@ export default {
     0% {
         transform: translate(-50%, -50%) rotateZ(0);
     }
+
     100% {
         transform: translate(-50%, -50%) rotateZ(360deg);
     }
@@ -1377,9 +1321,11 @@ export default {
     0% {
         opacity: 0.7;
     }
+
     50% {
         opacity: 1;
     }
+
     100% {
         opacity: 0.7;
     }
@@ -1389,6 +1335,7 @@ export default {
     0% {
         opacity: 1;
     }
+
     100% {
         top: -45px;
         left: 50px;
@@ -1400,6 +1347,7 @@ export default {
     0% {
         opacity: 1;
     }
+
     100% {
         top: -45px;
         left: 170px;
@@ -1411,6 +1359,7 @@ export default {
     0% {
         opacity: 1;
     }
+
     100% {
         top: -45px;
         left: 300px;
@@ -1422,6 +1371,7 @@ export default {
     0% {
         opacity: 1;
     }
+
     100% {
         top: -45px;
         left: 428px;
@@ -1433,6 +1383,7 @@ export default {
     0% {
         opacity: 1;
     }
+
     100% {
         top: -45px;
         left: 550px;
@@ -1444,6 +1395,7 @@ export default {
     0% {
         opacity: 1;
     }
+
     100% {
         top: -45px;
         left: 668px;
