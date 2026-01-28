@@ -1,30 +1,27 @@
 <template>
     <div class="history-box">
-        <div class="header-line">
-            <i class="back" @click="back"></i>
-            直播间近30轮结果
-        </div>
+        <div class="title"></div>
+        <button class="btn-close" @click="back"></button>
         <div class="content-box">
             <ul class="rs-list">
-                <li v-for="item,index in historyData" :key="index">
-                    <span class="index">{{index+1}}</span>
-                    <img :src="`https://file8.iusns.com/gift/${giftArr[item.lucky_ticket-1].id}_b`"  alt="">
+                <li v-for="(item, index) in historyData" :class="`t-${item}`" :key="index">
+                    <span class="index">{{ index + 1 }}</span>
                 </li>
             </ul>
         </div>
     </div>
 </template>
 <script>
-import {Toast} from "vant";
+import { Toast } from "vant";
 export default {
     props: {
-        giftArr:{
-            default:[]
+        giftArr: {
+            default: []
         }
     },
     data() {
         return {
-            historyData:''
+            historyData: [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6,]
         }
     },
     components: {
@@ -36,10 +33,10 @@ export default {
         this.getHistoryList();
     },
     methods: {
-        back(){
+        back() {
             this.$emit('back')
         },
-        getHistoryList(){
+        getHistoryList() {
             this.request.get("/v1/hwd/guess/getLuckyTicketHis").then((res) => {
                 if (res.code == 200) {
                     this.historyData = res.data.list;
@@ -57,77 +54,88 @@ export default {
 </script>
 <style lang="scss" scoped>
 .history-box {
-    height: 1176px;
-    background: url("../../../assets/guess/bg_3.png") no-repeat center transparent;
-    background-size: cover;
+    height: 1312px;
+    background: url("~@/assets/kitchen/rule-bg.png") no-repeat center bottom transparent;
+    background-size: 100% 1168px;
+    position: relative;
+
     * {
         font-family: PingFangSC-Medium, PingFang SC, "Helvetica Neue", Arial, sans-serif;
         font-weight: bold;
     }
-    .header-line {
-        height: 80px;
-        background: rgba(11, 1, 29, 0.4);
-        text-align: center;
-        font-size: 32px;
-        color: #FFFFFF;
-        letter-spacing: 0;
-        position: relative;
-        line-height: 80px;
 
-        .back {
-            display: block;
-            width: 32px;
-            height: 32px;
-            position: absolute;
-            top: 50%;
-            left: 32px;
-            transform: translateY(-50%) rotateZ(-90deg);
-            background: url("../../../assets/guess/common_icon_up_grey@3x.png") no-repeat center;
-            background-size: cover;
-        }
+    .title {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: url("~@/assets/kitchen/title-history.png") no-repeat center;
+        background-size: contain;
+        z-index: 10;
+        width: 446.51px;
+        height: 160px;
+    }
+
+    .btn-close {
+        position: absolute;
+        width: 72px;
+        height: 72px;
+        background: url("~@/assets/kitchen/btn-close.png") no-repeat center;
+        background-size: contain;
+        top: 56px;
+        right: 38px;
     }
 
     .content-box {
         position: absolute;
-        top: 90px;
+        top: 290px;
         left: 0;
         right: 0;
         bottom: 0;
         overflow: auto;
-        padding: 32px 48px;
+        padding: 32px 68px;
 
-        .rs-list{
+        .rs-list {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-around;
-            li{
-                width: 112px;
-                height: 112px;
+            justify-content: flex-start;
+
+            li {
+                width: 102px;
+                height: 102px;
                 border-radius: 50%;
                 display: flex;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
                 position: relative;
-                margin-bottom: 32px;
-                border: 1px solid rgba(216,216,216,0.3);
-                img{
-                    width: 88px;
-                    height: 88px;
+                flex-wrap: wrap;
+                margin: 0 10px;
+                margin-bottom: 45px;
+                background: url("~@/assets/kitchen/icon-mini-1.png") no-repeat center;
+                background-size: 102px 102px;
+
+                @for $i from 1 through 6 {
+                    &.t-#{$i} {
+                        background: url("~@/assets/kitchen/icon-mini-#{$i}.png") no-repeat center;
+                        background-size: 102px 102px;
+                    }
                 }
-                .index{
+
+                .index {
                     position: absolute;
-                    top: -20px;
-                    right: 0;
-                    width: 48px;
-                    height: 48px;
-                    display: block;
+                    top: 0px;
+                    left: 0;
+                    width: 28px;
+                    height: 28px;
+                    box-shadow: inset 0px 2px 6px 0px #FFFFFF;
+                    font-weight: 400;
+                    font-size: 20px;
+                    color: #FFFFFF;
+                    z-index: 1;
                     border-radius: 50%;
-                    text-align: center;
-                    color: #fff;
-                    font-size: 28px;
-                    line-height: 48px;
-                    background: #93633E;
-                    border: 1px solid #FFE3BC;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
             }
         }
@@ -135,5 +143,4 @@ export default {
 
 
 }
-
 </style>
